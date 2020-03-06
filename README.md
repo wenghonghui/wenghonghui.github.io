@@ -1,1 +1,1 @@
-My homepage modified from hexo theme Icalm. Preview: [wenghonghui.github.io](https://wenghonghui.github.io)
+My homepage modified from hexo theme Icalm. Preview: [wenghonghui.github.io](https://wenghonghui.github.io/home/)
