@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="google-site-verification" content="RWClpuYiHVU-1eDpl76WLimnkSZy5fW0SAasS-6LRrQ" />
   <title>Honghui Weng</title>
   
     <link rel="icon" href="/images/favicon.ico">
@@ -75,6 +76,46 @@
     <header class="title">
       
         <h1>
+          <a href="/2020/03/06/Compiler-ch2/">Compiler ch1 Scanning</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2020-03-06T15:52:13.000Z" itemprop="datePublished">
+    2020-03-06
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/compiler/">compiler</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/scanning/">scanning</a> }
+  </li>
+
+
+  </ul>
+  
+  
+</div>
+
+    </header>
+    <div>
+      
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
           <a href="/2020/03/06/Compiler-ch1/">Compiler ch1 Introduction</a>
         </h1>
       
@@ -106,12 +147,12 @@
         <p>A <em>compiler</em> is a computer program that translates computer code written in one programming language (the source code) into another language (the object code)</p>
 <img src="/images/compiler/ch1/1.00.png" alt="1.00" style="zoom:50%;" />
 
-<h2 id="Programs-Related-to-Compilers"><a href="#Programs-Related-to-Compilers" class="headerlink" title="Programs Related to Compilers"></a>Programs Related to Compilers</h2><p>Some programs that are related to or used together with compilers and that often come together with compilers in a complete language development environment.</p>
-<h3 id="Interpreter"><a href="#Interpreter" class="headerlink" title="Interpreter"></a>Interpreter</h3><p>A language translator. It executes the source program immediately.</p>
-<h3 id="Assembler"><a href="#Assembler" class="headerlink" title="Assembler"></a>Assembler</h3><p>A translator that translates assembly language into object code</p>
+<h2 id="1-Programs-Related-to-Compilers"><a href="#1-Programs-Related-to-Compilers" class="headerlink" title="1. Programs Related to Compilers"></a>1. Programs Related to Compilers</h2><p>Some programs that are related to or used together with compilers and that often come together with compilers in a complete language development environment.</p>
+<h3 id="1-1-Interpreter"><a href="#1-1-Interpreter" class="headerlink" title="1.1 Interpreter"></a>1.1 Interpreter</h3><p>A language translator. It executes the source program immediately.</p>
+<h3 id="1-2-Assembler"><a href="#1-2-Assembler" class="headerlink" title="1.2 Assembler"></a>1.2 Assembler</h3><p>A translator that translates assembly language into object code</p>
 <img src="/images/compiler/ch1/1.0.png" alt="1.0" style="zoom:50%;" />
 
-<h3 id="Linker"><a href="#Linker" class="headerlink" title="Linker"></a>Linker</h3><ul>
+<h3 id="1-3-Linker"><a href="#1-3-Linker" class="headerlink" title="1.3 Linker"></a>1.3 Linker</h3><ul>
 <li><p>Collects code separately compiled or assembled in different object files into a file.</p>
 </li>
 <li><p>Connects the code for standard library functions.</p>
@@ -119,11 +160,11 @@
 <li><p>Connects resources supplied by the operating system of the computer.</p>
 </li>
 </ul>
-<h3 id="Loader"><a href="#Loader" class="headerlink" title="Loader"></a>Loader</h3><p>Loaders resolve all relocatable address relative to the starting address.</p>
-<h3 id="Preprocessor"><a href="#Preprocessor" class="headerlink" title="Preprocessor"></a>Preprocessor</h3><p>Delete comments, include other files, perform macro substitutions.</p>
-<h2 id="The-translation-process"><a href="#The-translation-process" class="headerlink" title="The translation process"></a>The translation process</h2><img src="/images/compiler/ch1/1.1.png" alt="1" style="zoom:50%;" />
+<h3 id="1-4-Loader"><a href="#1-4-Loader" class="headerlink" title="1.4 Loader"></a>1.4 Loader</h3><p>Loaders resolve all relocatable address relative to the starting address.</p>
+<h3 id="1-5-Preprocessor"><a href="#1-5-Preprocessor" class="headerlink" title="1.5 Preprocessor"></a>1.5 Preprocessor</h3><p>Delete comments, include other files, perform macro substitutions.</p>
+<h2 id="2-The-translation-process"><a href="#2-The-translation-process" class="headerlink" title="2 The translation process"></a>2 The translation process</h2><img src="/images/compiler/ch1/1.1.png" alt="1" style="zoom:50%;" />
 
-<h3 id="Scanner"><a href="#Scanner" class="headerlink" title="Scanner"></a>Scanner</h3><p>This phase of the compiler <strong>does the actual reading of the source program</strong>. Which is usually in the form of a stream of characters.</p>
+<h3 id="2-1-Scanner"><a href="#2-1-Scanner" class="headerlink" title="2.1 Scanner"></a>2.1 Scanner</h3><p>This phase of the compiler <strong>does the actual reading of the source program</strong>. Which is usually in the form of a stream of characters.</p>
 <p>The scanner performs what is called <strong>lexical analysis</strong>.</p>
 <p>It collects sequences of characters into meaningful units called <strong>token</strong>.</p>
 <blockquote>
@@ -141,7 +182,7 @@
 <p><code>+</code>                    plus sign</p>
 <p><code>2</code>                    number                     </p>
 </blockquote>
-<h3 id="Parser"><a href="#Parser" class="headerlink" title="Parser"></a>Parser</h3><p>The parser receives the source code in the form of tokens from the scanner and performs <strong>syntax analysis</strong>, which determines the structure of the program.</p>
+<h3 id="2-2-Parser"><a href="#2-2-Parser" class="headerlink" title="2.2 Parser"></a>2.2 Parser</h3><p>The parser receives the source code in the form of tokens from the scanner and performs <strong>syntax analysis</strong>, which determines the structure of the program.</p>
 <p>Syntax analysis determines the structural elements of the program as well as their relationships. The results of syntax analysis are usually represented as a <strong>parse tree</strong> or a <strong>syntax tree</strong>.</p>
 <blockquote>
 <p><strong>Input</strong>: the forms of tokens</p>
@@ -156,7 +197,7 @@
 
 <p>If we know that an expression is a subscript operation, then it is no longer necessary to keep the brackets [ and ] that represent this operation in the original </p>
 </blockquote>
-<h3 id="Semantic-analyzer"><a href="#Semantic-analyzer" class="headerlink" title="Semantic analyzer"></a>Semantic analyzer</h3><p>The semantics of a program determine its runtime behavior.</p>
+<h3 id="2-3-Semantic-analyzer"><a href="#2-3-Semantic-analyzer" class="headerlink" title="2.3 Semantic analyzer"></a>2.3 Semantic analyzer</h3><p>The semantics of a program determine its runtime behavior.</p>
 <p><strong>Static semantics</strong>: features of programming languages that can be determined prior to execution and yet cannot  be conveniently expressed as syntax and analyzed by the parser.</p>
 <p>The analysis of static semantic is the task of the semantic analyzer.</p>
 <p><strong>Dynamic semantics</strong>: properties of a program that can only be determined by executing it — cannot be determined by a compiler, since it does not execute the program.</p>
@@ -164,7 +205,7 @@
 <p>E.g</p>
 <img src="/images/compiler/ch1/1.4.png" alt="1.4" style="zoom:50%;" />
 </blockquote>
-<h3 id="Source-code-optimizer"><a href="#Source-code-optimizer" class="headerlink" title="Source code optimizer"></a>Source code optimizer</h3><p>Compilers often include a number of code improvement, or optimization, step.</p>
+<h3 id="2-4-Source-code-optimizer"><a href="#2-4-Source-code-optimizer" class="headerlink" title="2.4 Source code optimizer"></a>2.4 Source code optimizer</h3><p>Compilers often include a number of code improvement, or optimization, step.</p>
 <p>Individual compilers exhibit a wide variation not only in the kinds of optimizations performed but also in the placement of the optimization phases.</p>
 <p>Source-level optimization</p>
 <blockquote>
@@ -188,12 +229,12 @@
 </li>
 </ul>
 </blockquote>
-<h3 id="Code-generator"><a href="#Code-generator" class="headerlink" title="Code generator"></a>Code generator</h3><p>The code generator takes the intermediate code or intermediate representation (IR) and generates code for the target machine.</p>
+<h3 id="2-5-Code-generator"><a href="#2-5-Code-generator" class="headerlink" title="2.5 Code generator"></a>2.5 Code generator</h3><p>The code generator takes the intermediate code or intermediate representation (IR) and generates code for the target machine.</p>
 <blockquote>
 <p><strong>Input</strong> : intermediate code or IR<br><strong>Output</strong>: machine code, code for the target machine</p>
 <img src="/images/compiler/ch1/1.7.png" alt="1.7" style="zoom:50%;" />
 </blockquote>
-<h3 id="Target-code-optimizer"><a href="#Target-code-optimizer" class="headerlink" title="Target code optimizer"></a>Target code optimizer</h3><p>Improve the target code generated by the code generator</p>
+<h3 id="2-6-Target-code-optimizer"><a href="#2-6-Target-code-optimizer" class="headerlink" title="2.6 Target code optimizer"></a>2.6 Target code optimizer</h3><p>Improve the target code generated by the code generator</p>
 <ul>
 <li><p>Choosing addressing modes to improve performance </p>
 </li>
@@ -206,12 +247,12 @@
 <p>E,g</p>
 <img src="/images/compiler/ch1/1.8.png" alt="1.8" style="zoom:50%;" />
 </blockquote>
-<h2 id="Major-data-structures-in-a-compiler"><a href="#Major-data-structures-in-a-compiler" class="headerlink" title="Major data structures in a compiler"></a>Major data structures in a compiler</h2><h3 id="Tokens"><a href="#Tokens" class="headerlink" title="Tokens"></a>Tokens</h3><p>a value of an enumerated data type         the sets of tokens</p>
-<h3 id="Syntax-tree"><a href="#Syntax-tree" class="headerlink" title="Syntax tree"></a>Syntax tree</h3><p>Each node is a record whose fields represent the information collected by the parser and semantic analyzer</p>
-<h3 id="Symbol-table"><a href="#Symbol-table" class="headerlink" title="Symbol table"></a>Symbol table</h3><p>Information associated with identifiers: functions, variables, constants, and data types.</p>
-<h3 id="Literal-table"><a href="#Literal-table" class="headerlink" title="Literal table"></a>Literal table</h3><p>Store constants and strings</p>
-<h3 id="Intermediate-code"><a href="#Intermediate-code" class="headerlink" title="Intermediate code"></a>Intermediate code</h3><p>This code is kept as an array of text strings, a temporary text file, or as a linked list of structures.</p>
-<h3 id="Temporary-files"><a href="#Temporary-files" class="headerlink" title="Temporary files"></a>Temporary files</h3><p>Using temporary files to hold the products of intermediate steps</p>
+<h2 id="3-Major-data-structures-in-a-compiler"><a href="#3-Major-data-structures-in-a-compiler" class="headerlink" title="3 Major data structures in a compiler"></a>3 Major data structures in a compiler</h2><h3 id="3-1-Tokens"><a href="#3-1-Tokens" class="headerlink" title="3.1 Tokens"></a>3.1 Tokens</h3><p>a value of an enumerated data type         the sets of tokens</p>
+<h3 id="3-2-Syntax-tree"><a href="#3-2-Syntax-tree" class="headerlink" title="3.2 Syntax tree"></a>3.2 Syntax tree</h3><p>Each node is a record whose fields represent the information collected by the parser and semantic analyzer</p>
+<h3 id="3-3-Symbol-table"><a href="#3-3-Symbol-table" class="headerlink" title="3.3 Symbol table"></a>3.3 Symbol table</h3><p>Information associated with identifiers: functions, variables, constants, and data types.</p>
+<h3 id="3-4-Literal-table"><a href="#3-4-Literal-table" class="headerlink" title="3.4 Literal table"></a>3.4 Literal table</h3><p>Store constants and strings</p>
+<h3 id="3-5-Intermediate-code"><a href="#3-5-Intermediate-code" class="headerlink" title="3.5 Intermediate code"></a>3.5 Intermediate code</h3><p>This code is kept as an array of text strings, a temporary text file, or as a linked list of structures.</p>
+<h3 id="3-6-Temporary-files"><a href="#3-6-Temporary-files" class="headerlink" title="3.6 Temporary files"></a>3.6 Temporary files</h3><p>Using temporary files to hold the products of intermediate steps</p>
 
       
     </div>
