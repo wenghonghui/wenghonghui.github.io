@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://wenghonghui.github.io/2020/03/08/Compiler-ch2-Scanning/</loc>
+    
+    <lastmod>2020-03-08T14:05:25.638Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://wenghonghui.github.io/home/index.html</loc>
     
     <lastmod>2020-03-08T07:47:30.844Z</lastmod>
