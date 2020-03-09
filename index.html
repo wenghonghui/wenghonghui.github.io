@@ -537,6 +537,87 @@
     <header class="title">
       
         <h1>
+          <a href="/2020/03/05/hexo-mathjax/">hexo支持数学公式</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2020-03-05T15:59:48.000Z" itemprop="datePublished">
+    2020-03-05
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/hexo/">hexo</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/mathjax/">mathjax</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/markdown/">markdown</a> }
+  </li>
+
+
+  </ul>
+  
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>最近用<a href="https://github.com/tommy351/hexo和" target="_blank" rel="noopener">Hexo</a>github搭建完个人网站后，准备把一些文章迁移到网站上。然而却发现，许多文章中的数学公式无法正常地在网页上显示。在查了许多博客，踩了许多坑之后终于让公式能正常显示，下面将描述具体步骤</p>
+<p>我使用的hexo主题是: <a href="https://user-images.githubusercontent.com/10287709/34717147-f9b78e4c-f56c-11e7-803c-a49bc41d6813.png" target="_blank" rel="noopener">icalm</a></p>
+<h3 id="添加MathJax"><a href="#添加MathJax" class="headerlink" title="添加MathJax"></a>添加MathJax</h3><p><a href="https://www.mathjax.org/" target="_blank" rel="noopener">MathJax</a>是一个JavaScript引擎，用来显示网络上的数学公式。它支持大部分的主流的浏览器。</p>
+<p>有些hexo主题 (如NexT) 内部已经集成了MathJax，这时只需要编辑<code>themes/next/_config.yml</code>，找到<code>math</code>配置项，配置为<code>enable: true</code>即可启用。</p>
+<p>至于其余配置项：</p>
+<ul>
+<li><p><code>per_page</code>默认为<code>true</code>，表示每篇文章需要额外地单独启用MathJax。也就是说，还需要在其文章头部添加<code>mathjax: true</code>，否则其中的MathJax公式依然不会被解析。</p>
+</li>
+<li><p><code>engine</code>默认使用的是mathjax，相比katex功能更强大（当然也慢了一点）</p>
+</li>
+</ul>
+<p>但我使用的主题并没有在内部添加MathJax，因此我们需要自行给主题添加MathJax</p>
+<p>首先在主题目录<code>themes/theme&#39;s name/layout/_partial/</code>下 新建一个文件<code>mathjax.ejs</code>，内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type&#x3D;&quot;text&#x2F;x-mathjax-config&quot;&gt;</span><br><span class="line">  MathJax.Hub.Config(&#123;</span><br><span class="line">    tex2jax: &#123;</span><br><span class="line">      inlineMath: [ [&#39;$&#39;,&#39;$&#39;], [&quot;\\(&quot;,&quot;\\)&quot;] ],</span><br><span class="line">      processEscapes: true</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&lt;&#x2F;script&gt;</span><br><span class="line"></span><br><span class="line">&lt;script type&#x3D;&quot;text&#x2F;x-mathjax-config&quot;&gt;</span><br><span class="line">    MathJax.Hub.Config(&#123;</span><br><span class="line">      tex2jax: &#123;</span><br><span class="line">        skipTags: [&#39;script&#39;, &#39;noscript&#39;, &#39;style&#39;, &#39;textarea&#39;, &#39;pre&#39;, &#39;code&#39;]</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&lt;&#x2F;script&gt;</span><br><span class="line"></span><br><span class="line">&lt;script type&#x3D;&quot;text&#x2F;x-mathjax-config&quot;&gt;</span><br><span class="line">    MathJax.Hub.Queue(function() &#123;</span><br><span class="line">        var all &#x3D; MathJax.Hub.getAllJax(), i;</span><br><span class="line">        for(i&#x3D;0; i &lt; all.length; i +&#x3D; 1) &#123;</span><br><span class="line">            all[i].SourceElement().parentNode.className +&#x3D; &#39; has-jax&#39;;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&lt;&#x2F;script&gt;</span><br><span class="line"></span><br><span class="line">&lt;script type&#x3D;&quot;text&#x2F;javascript&quot; src&#x3D;&quot;http:&#x2F;&#x2F;cdn.mathjax.org&#x2F;mathjax&#x2F;latest&#x2F;MathJax.js?config&#x3D;TeX-AMS-MML_HTMLorMML&quot;&gt;</span><br><span class="line">&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
+<p>然后在<code>themes/theme&#39;s name/layout/_partial/</code>目录下的<code>head.ejs</code>里面添加以下几行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;% if(theme.mathjax) &#123;%&gt;</span><br><span class="line">    &lt;%- partial(&#39;mathjax&#39;)%&gt;</span><br><span class="line">&lt;% &#125; %&gt;</span><br></pre></td></tr></table></figure>
+<p>这几行的意思是如果在主题的<code>_config.xml</code>里面把<code>mathjax</code>变量设置成<code>true</code>那么就把 <code>mathjax.ejs</code>包含进来，所以还需要在<code>themes/_config.xml</code>里面添加：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mathjax: true</span><br></pre></td></tr></table></figure>
+<p>配置完之后生成的网页里面都包含有<code>mathjax</code>需要的一段<code>script</code>。</p>
+<h3 id="渲染引擎"><a href="#渲染引擎" class="headerlink" title="渲染引擎"></a>渲染引擎</h3><p>完成添加MathJax后，应该就已经能在文章中写一些简单的MathJax了。</p>
+<p>但是Hexo默认的渲染引擎<code>hexo-renderer-marked</code>对MathJax的支持很不好，会出现各种莫名其妙的问题，例如可能会出现公式能在本地<code>localhost:4000</code>上正常显示，但上传到github个人主页上却无法正确显示的情况。</p>
+<p>因此我们需要换用其他渲染引擎。在这里推荐使用<code>hexo-renderer-kramed</code>或者<code>hexo-pandoc-render</code>。</p>
+<p><code>hexo-pandoc-render</code>功能很强大不仅可以渲染markdown，还支持textile、reStructedText等许多其他格式。具体参见<a href="https://www.npmjs.com/package/hexo-renderer-pandoc" target="_blank" rel="noopener">官方教程</a>。</p>
+<p>下面以<code>hexo-renderer-kramed</code>为例，先卸载原来的渲染引擎，再安装新的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm uninstall hexo-renderer-marked --save</span><br><span class="line">npm install hexo-renderer-kramed --save</span><br></pre></td></tr></table></figure>
+<p>如果你安装了<code>hexo-mat</code>h包，卸载再安装<code>hexo-renderer-mathja</code>x包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm uninstall hexo-math --save</span><br><span class="line">npm install hexo-renderer-mathjax --save</span><br></pre></td></tr></table></figure>
+<p>更新mathjax的CDN链接，打开<code>node_modules/hexo-renderer-mathjax/mathjax.html</code></p>
+<p>修改<scripts>标签</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=<span class="string">"text/javascript"</span></span><br><span class="line">   src=<span class="string">"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"</span>&gt;&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<p>最后开启渲染引擎：打开主题的<code>_config.yml</code>文件添加</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">math:</span><br><span class="line">  enable: true</span><br><span class="line">  engine: mathjax</span><br></pre></td></tr></table></figure>
+<p>重新启动hexo（先clean再generate）便可以正常显示公式了。</p>
+<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><hr>
+<p><a href="https://wugh.github.io/posts/2013/11/hexo-math-equation/" target="_blank" rel="noopener">hexo数学公式</a></p>
+<p><a href="https://www.cnblogs.com/SHOR/p/9581661.html" target="_blank" rel="noopener">hexo支持mathjax</a></p>
+<p><a href="https://github.com/bolnh/hexo-theme-material/issues/574" target="_blank" rel="noopener">数学公式再本地可以正常显示，上传到github.io上无法显示</a></p>
+
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
           <a href="/2020/03/05/hello-world/">Hello World</a>
         </h1>
       
