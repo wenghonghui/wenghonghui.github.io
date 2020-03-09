@@ -12,6 +12,38 @@
   
   
   
+  
+    <!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  
   <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
   
 <link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
@@ -108,7 +140,7 @@
         <p>A <em>compiler</em> is a computer program that translates computer code written in one programming language (the source code) into another language (the object code)</p>
 <img src="/images/compiler/ch1/1.00.png" alt="1.00" style="zoom:50%;" />
 
-<h2 id="1-Programs-Related-to-Compilers"><a href="#1-Programs-Related-to-Compilers" class="headerlink" title="1. Programs Related to Compilers"></a>1. Programs Related to Compilers</h2><p>Some programs that are related to or used together with compilers and that often come together with compilers in a complete language development environment.</p>
+<h2 id="1-Programs-Related-to-Compilers"><a href="#1-Programs-Related-to-Compilers" class="headerlink" title="1 Programs Related to Compilers"></a>1 Programs Related to Compilers</h2><p>Some programs that are related to or used together with compilers and that often come together with compilers in a complete language development environment.</p>
 <h3 id="1-1-Interpreter"><a href="#1-1-Interpreter" class="headerlink" title="1.1 Interpreter"></a>1.1 Interpreter</h3><p>A language translator. It executes the source program immediately.</p>
 <h3 id="1-2-Assembler"><a href="#1-2-Assembler" class="headerlink" title="1.2 Assembler"></a>1.2 Assembler</h3><p>A translator that translates assembly language into object code</p>
 <img src="/images/compiler/ch1/1.0.png" alt="1.0" style="zoom:50%;" />

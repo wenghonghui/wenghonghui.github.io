@@ -12,6 +12,38 @@
   
   
   
+  
+    <!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  
   <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
   
 <link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
@@ -77,6 +109,310 @@
     <header class="title">
       
         <h1>
+          <a href="/2020/03/08/Compiler-ch2-Scanning/">Compiler ch2 Scanning</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2020-03-08T14:04:35.000Z" itemprop="datePublished">
+    2020-03-08
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/compiler/">compiler</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/scanning/">scanning</a> }
+  </li>
+
+
+  </ul>
+  
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>The scanning, or <strong>lexical analysis</strong>, phase of a compiler has the task of reading the source program as a file of characters and dividing it up into tokens.</p>
+<p>Each <strong>token</strong> is a sequence of characters that represents a unit of information in the source program.</p>
+<h2 id="1-The-Scanning-Process"><a href="#1-The-Scanning-Process" class="headerlink" title="1 The Scanning Process"></a>1 The Scanning Process</h2><p>An overview of the operation of a scnner and the structures and concepts involved.</p>
+<p>Tokens are logical entities that are usually defined as an enumerated type. </p>
+<blockquote>
+<p>Tokens might be defined in C as</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">enum</span></span><br><span class="line">	&#123;IF, THEN, ELSE, PLUS, MINUS, NUM, ID, ...&#125;</span><br><span class="line">	TokenType;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>Tokens fall into several categories:</p>
+<ul>
+<li><strong>reserved words</strong>: IF, THEN, …</li>
+<li><strong>special symbols</strong>: PLUS, MINUS, …</li>
+<li><strong>tokens represent multiple strings</strong>: NUM(represents number), ID(represents identifiers), …</li>
+</ul>
+<p>The string of characters represented by a token is sometimes called its <strong>string value</strong> or its <strong>lexeme</strong>. </p>
+<p>Any value associated to a token is called an attribute of the token, and the string value is an example of an attribute.</p>
+<blockquote>
+<p>E.g</p>
+<p>A <strong>NUM</strong> token may have a string value attribute such as “32767”, which consists of five numeric characters, but it will also have a numeric value attribute that consists of the actual value 32767 computed from its string value.</p>
+</blockquote>
+<p>A scanner needs to compute at least as many attributes of a token as necessary to allow further processing.</p>
+<p>Since the scanner will have to compute possibly several attributes for each token, it is often helpful to collect all the attributes into a single structured data type, which we could call a <strong>token record</strong>.</p>
+<blockquote>
+<p>E.g</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  TokenType tokenval;</span><br><span class="line">  <span class="keyword">char</span> * stringval;</span><br><span class="line">  <span class="keyword">int</span> numval;</span><br><span class="line">&#125; TokenRecord;</span><br><span class="line"></span><br><span class="line"><span class="comment">// or possibly as a union</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  TokenType tokenval;</span><br><span class="line">  <span class="keyword">union</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">char</span> * stringval;</span><br><span class="line">  	<span class="keyword">int</span> numval;</span><br><span class="line">  &#125; attribute;</span><br><span class="line">&#125; TokenRecord;</span><br></pre></td></tr></table></figure>
+
+<p>(Which assumes that the string value attribute is needed only for identifiers and the numeric value attribute only for numbers)</p>
+</blockquote>
+<p>Although the task of the scanner is to convert the entire source program into a sequence of tokens, the scanner will rarely do this at once. </p>
+<p>The scanner will operate <u>under the control of the parse</u>, returning the single next token from the input on demand via a function that will have a declaration similar to the C declaration</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">TokenType <span class="title">getToken</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>The <strong>getToken</strong> function declared in this manner will, when called, return the next token from the input, as well as compute additional attributes, such as the string value of the token. The string of input characters is usually not made a parameter to this function, but is kept in a buffer or provided by the system input facilities.</p>
+</blockquote>
+<h2 id="2-Regular-Expressions"><a href="#2-Regular-Expressions" class="headerlink" title="2 Regular Expressions"></a>2 Regular Expressions</h2><p>Regular expression represent patterns of strings of characters.</p>
+<p>A regular expression <em>r</em> is completely defined by the set of string that it matches. This set is called the <strong>language generated by the regular expression</strong> and is written as <em>L(r)</em>.</p>
+<h3 id="2-1-Definition-of-Regular-Expressions"><a href="#2-1-Definition-of-Regular-Expressions" class="headerlink" title="2.1 Definition of Regular Expressions"></a>2.1 Definition of Regular Expressions</h3><p>A <strong>regular expression</strong> is one of the following:</p>
+<ol>
+<li><p>A <strong>basic</strong> regular expression, consisting of a single character <strong>a</strong>, where a is from an alphabet $\Sigma$ of legal characters; the matecharacter $\epsilon$ ; or the matecharacter $\phi$. In the first case,  $L(a)$= { a }; in the second, $L(\epsilon)$ = { $\epsilon$ }; in the third, $L(\phi)$ = { } </p>
+</li>
+<li><p>An expression of the form <strong>r|s</strong>, where r and s are regular expressions. In this case, $L(r|s) = L(r) \cup L(s)$ </p>
+</li>
+<li><p>An expression of the form <strong>rs</strong>, where r and s are regular expressions. In this case, $L(rs) = L(r)L(s)$  </p>
+</li>
+<li><p>An expression of the form <strong>r*</strong>, where r is regular expression. In this case, $ L(r^*)=L(r)^* $.</p>
+</li>
+<li><p>An expression of the form <strong>(r)</strong>, where r is regular expression. In this case, $L((r))=L(r)$. Thus, parenthese do not change the language. They are used only to adjust the precedence of the operations.</p>
+</li>
+</ol>
+<p>Tips:</p>
+<ul>
+<li>$\epsilon$ denotes the empty string; $\phi$ denotes the empty set;  the set { } contains no string at all, while the set  { $\epsilon$ } contains the single string consisting of no characters.</li>
+<li>precedence: * &gt; concatenation &gt; |</li>
+<li>“Regular expression can’t count” ( $a^nba^n$ )</li>
+</ul>
+<h3 id="2-2-Extensions-to-Regular-Expressions"><a href="#2-2-Extensions-to-Regular-Expressions" class="headerlink" title="2.2 Extensions to Regular Expressions"></a>2.2 Extensions to Regular Expressions</h3><p><strong>One or more repetitions</strong></p>
+<p><strong>r+</strong> indicates one or more repetitions of r.</p>
+<p><strong>Any character</strong></p>
+<p>A typical metacharacter that is used to express a match of any character is the <strong>period</strong> “<strong>.</strong>“ , which does not require that the alphabet actually be written out.</p>
+<p><strong>A range of characters</strong></p>
+<blockquote>
+<p>E.g</p>
+<p>[A-Z], [a-zA-Z]</p>
+</blockquote>
+<p><strong>Any character not in a given set</strong></p>
+<p>Carat character ^ is used in conjunction to form complements.</p>
+<p><strong>Optional subexpressions</strong></p>
+<p>Mark metacharacter r? to indicate that strings matched by r are optional (or that 0 or 1 copies of r are present)</p>
+<h3 id="2-3-Regular-Expressions-for-Programming-Language-Tokens"><a href="#2-3-Regular-Expressions-for-Programming-Language-Tokens" class="headerlink" title="2.3 Regular Expressions for Programming Language Tokens"></a>2.3 Regular Expressions for Programming Language Tokens</h3><p>Programming language tokens tend to fall into several limited categories that are fairly standard across many different programming languages.</p>
+<p><strong>Typical regular expressions for some categories of tokens</strong> :</p>
+<ul>
+<li><p><strong>Number</strong></p>
+<ul>
+<li><p>nat = [0-9]+</p>
+</li>
+<li><p>signedNat = (+|-)?nat</p>
+</li>
+<li><p>Number = signedNat(“.” nat) ? (E signedNat) ?</p>
+</li>
+</ul>
+</li>
+<li><p><strong>Reserved Words and Identifiers</strong></p>
+<p>Reserved words are represented by their fixed sequences of characters.</p>
+<ul>
+<li>reserved = if | while | do | …</li>
+</ul>
+<p>Identifiers are strings of characters that are not fixed. Typically, an identifier must begin with a letter and contain only letters and digits.</p>
+<ul>
+<li>letter = [a-zA-Z]</li>
+<li>digit = [0-9]</li>
+<li>identifier = letter(letter|digit)* </li>
+</ul>
+</li>
+<li><p><strong>Comments</strong></p>
+<p>A scanner must recognize comments and discard them. Thus, we need to write regular expressions for comments. </p>
+<p>Comments can have a number of different forms. Another complication in recognizing comments is that, in some programming languages, comments can be nested.</p>
+</li>
+<li><p><strong>Ambiguity, White Space and Lookahead</strong></p>
+<p>Frequently, in the description of programming language tokens using regular expressions, <u>some strings can be matched by several different regular expressions</u>.</p>
+<p>A programming language definition must state which interpretationis to be observed, and the regular expressions themselves cannot do this.</p>
+<p>Two typical rules:</p>
+<ul>
+<li><p>When a string can be either an identifier or a keyword, keyword interpretation is generally preferred.</p>
+</li>
+<li><p>When a string can be a single token or a sequence of several tokens, the single-token interpretation is typically preferred. </p>
+<p>This preference is often referred to as the <strong>principle of longest substring</strong>:  the longest of characters that could consitute a single token at any point is assumed to represent the next token.</p>
+</li>
+</ul>
+<p>Delimiters: characters that are unambiguously part of other tokens are delimiters.</p>
+<p>whitespace =  (newline | blank | tab | comment) + </p>
+<p>Lookahead: buffering of input characters, making places for backtracing</p>
+</li>
+</ul>
+<h2 id="3-Finite-Automata"><a href="#3-Finite-Automata" class="headerlink" title="3 Finite Automata"></a>3 Finite Automata</h2><p>Finite automata( finite-state machines) are a mathematical way of describing particular kinds of algorithms.</p>
+<p>A strong relationship between finite automata and regular expression</p>
+<img src="/images/compiler/ch2/2.1.png" alt="2.1" style="zoom:50%;" />
+
+<ul>
+<li><p><strong>Transition:</strong> record a change from one state to another upon a match of the character or characters by which they are labeled.</p>
+</li>
+<li><p><strong>start state:</strong> the recognition process begins. drawing an unlabeled arrowed line to it coming “<em>from nowhere</em>”</p>
+</li>
+<li><p><strong>accepting states:</strong> represent the end of the recognition process. drawing a double-line border around the state in the diagram.</p>
+</li>
+</ul>
+<h3 id="3-1-Definite-of-Deterministic-finite-automation-DFA"><a href="#3-1-Definite-of-Deterministic-finite-automation-DFA" class="headerlink" title="3.1 Definite of Deterministic finite automation(DFA)"></a>3.1 Definite of Deterministic finite automation(DFA)</h3><p>DFA: automata where the next state is uniquely given by the current state and the current input character.</p>
+<p><strong>Defintion</strong> of a DFA:</p>
+<p>A DFA (<em>deterministic finite automation</em>) $M$ consist of an alphabet $∑$, a set of states $S$, a transition function $T$ :$ S ×∑ → S$, a <em>start</em> state $s_0∈S$, and a set of <em>accepting</em> states $F \subset S$.</p>
+<p>The language accepted by $M$, written $L(M)$, is defined to be the set of strings of characters $c_1c_2c_3….c_n$ with each</p>
+<p>$c_i∈∑$ such that there exist states $s_1=T(s_0,c_1),s_2=T(s_1,c_2), s_n = T(s_{n-1},c_n)$ with $s_n$ is an element of $F$.</p>
+<p>Accepting state sn means the diagram:</p>
+<p>$→ s_0 → s_1 → s_2 → ……s_{n-1} → s_n$</p>
+<p>Some difference:</p>
+<ul>
+<li><p>The definition does not restrict the set of states to numbers</p>
+</li>
+<li><p>Don’t label the transitions with characters but with names representing a set of characters</p>
+</li>
+<li><p>Definitions $T: S ×∑ → S ,\  T(s, c) $must have a value for every s and c</p>
+<p>But in the diagram, $T(start,\ c)$ defined only if <em>c</em> is a letter, $T(in_id,\ c)$ is defined only if <em>c</em> is a letter or a digit. The convention is that <u>error transitions are not drawn in the diagram</u>.</p>
+</li>
+</ul>
+<blockquote>
+<p>E.g</p>
+<p>digit = [0-9]</p>
+<p>nat = digit +</p>
+<img src="/images/compiler/ch2/2.2.png" alt="2.2" style="zoom:50%;" />
+
+<p>signedNat = (+|-) ? nat</p>
+<img src="/images/compiler/ch2/2.3.png" alt="2.3" style="zoom:50%;" />
+
+<p>number = signedNat (“.” nat) ? (E signedNat) ?</p>
+<img src="/images/compiler/ch2/2.4.png" alt="2.4" style="zoom:50%;" />
+
+
+
+<p>A DFA of C comments: (easily than write down a regular expression)</p>
+<img src="/images/compiler/ch2/2.5.png" alt="2.5" style="zoom:50%;" />
+</blockquote>
+<h3 id="3-2-Lookahead-backtracking-and-nondeterministic-automata"><a href="#3-2-Lookahead-backtracking-and-nondeterministic-automata" class="headerlink" title="3.2 Lookahead,backtracking and nondeterministic automata"></a>3.2 Lookahead,backtracking and nondeterministic automata</h3><p>A typical action</p>
+<ol>
+<li><p><strong>making a transition</strong>: move the character from the input string to a string (the token string value or lexeme of the token)</p>
+</li>
+<li><p><strong>reaching an accepting state</strong>: return the token just recognized, along with any associated attributes.</p>
+</li>
+<li><p><strong>reaching an error state</strong>: either back up in the input (backtracking) or to generate an error token.</p>
+</li>
+</ol>
+<blockquote>
+<p>E.g</p>
+<img src="/images/compiler/ch2/2.6.png" alt="2.6" style="zoom:50%;" />
+
+<img src="/images/compiler/ch2/2.7.png" alt="2.7" style="zoom:50%;" />
+
+<img src="/images/compiler/ch2/2.8.png" alt="2.8" style="zoom:50%;" />
+</blockquote>
+<p><strong>NFA</strong>: <em>nondeterministic finite automaton</em>,</p>
+<p>Developing an algorithm for turning these NFA into DFAs.</p>
+<p><strong>ε<em>-transitiontransition</em></strong>: transition that may occur without consulting the input string (and without consuming any characters)</p>
+<p>It may be viewed as a “<em>match</em>“ of the empty string.</p>
+<p>( This should not be confused with a match of the character ε in the input)</p>
+<p>ε-transitions are useful in two ways:</p>
+<ol>
+<li>Express a choice of alternatives in a way that does not involve combining states. <em>Advantage:</em> keeping the original automata intact and only adding a new start state to connect them.</li>
+<li>Describe a match of the empty string explicitly.</li>
+</ol>
+<blockquote>
+<img src="/images/compiler/ch2/2.9.png" alt="2.9" style="zoom:50%;" />
+</blockquote>
+<p><strong>Definition</strong> of a <strong>NFA</strong> (<em>nondeterministic finite automaton</em>)  $M$ </p>
+<p>consists of an alphabet $\Sigma $, a set of states $S$,</p>
+<p>a transition function $T$: $S \times(\Sigma \cup { \varepsilon}) \rightarrow \zeta(S)$,</p>
+<p>a start state $s_0$ from $S$, and a set of accepting states $A$ from $S$.</p>
+<p>The language accepted by $M$, written $L(M)$, is defined to be the set of strings of characters $c_1c_2…. c_n$ with each $c_i$ from $\Sigma\cup{\varepsilon}$, such that there exist states $s_1$ in $T(s_0,\ c_1)$, $s_2$ in $T(s_1,\ c_2)$, … , $s_n$ in $T(s_{n-1},\ c_n)$ with $s_n$ an element of $A$</p>
+<p>An NFA does not represent an algorithm. However, it can be simulated by an algorithm that backtracks through every nondeterministic choice.</p>
+<blockquote>
+<p>E.g</p>
+<img src="/images/compiler/ch2/2.10.png" alt="2.10" style="zoom:50%;" />
+</blockquote>
+<h2 id="4-From-Regular-Expression-To-a-DFA"><a href="#4-From-Regular-Expression-To-a-DFA" class="headerlink" title="4 From Regular Expression To a DFA"></a>4 From Regular Expression To a DFA</h2><p>The algorithm : translating a regular expression into a DFA .</p>
+<img src="/images/compiler/ch2/2.11.png" alt="2.11" style="zoom:50%;" />
+
+<h3 id="4-1-From-a-regular-expression-to-an-NFA"><a href="#4-1-From-a-regular-expression-to-an-NFA" class="headerlink" title="4.1 From a regular expression to an NFA"></a>4.1 From a regular expression to an NFA</h3><p><strong>Thompson’s construction:</strong></p>
+<p>ε-transitions: to “<em>glue together</em>” the machine of each piece of a regular expression to form a machine that corresponds to the whole expression.</p>
+<img src="/images/compiler/ch2/2.12.png" alt="2.12" style="zoom:50%;" />
+
+<h3 id="4-2-From-an-NFA-to-a-DFA"><a href="#4-2-From-an-NFA-to-a-DFA" class="headerlink" title="4.2 From an NFA to a DFA"></a>4.2 From an NFA to a DFA</h3><p>The algorithm is called the <strong>subset construction</strong>.</p>
+<ol>
+<li><p><strong><em>the</em></strong> <strong>$\varepsilon$-closure of a Set of states:closure of a Set of states:</strong></p>
+<p>the $\varepsilon$-closure of a single state <em>s</em> is the set of states reachable by a series of zero or more $\varepsilon$-transitions<em>.</em></p>
+<blockquote>
+<img src="/images/compiler/ch2/2.13.png" alt="2.13" style="zoom:50%;" />
+</blockquote>
+<p>the $\varepsilon$-closure of a set of states : the union of the $\varepsilon$-closures of each individual state.</p>
+<blockquote>
+<img src="/images/compiler/ch2/2.14.png" alt="2.14" style="zoom:50%;" />
+</blockquote>
+</li>
+<li><p><strong>the Subset Construction:</strong></p>
+<ul>
+<li>Compute the $\varepsilon$-transitionclosure of the start state of $M$; this becomes the start state</li>
+<li>Given a set <em>S</em> of states and a character <em>a</em> in the alphabet, compute the set $S_a’={t|for\ some\ s\ in\ S\ there\ is\ a\ transition\ from\ s\ to\ t\ on\ a}$. Then, compute, the $\varepsilon$-closure of $\bar{S_a’}$</li>
+<li>Continue with this process until no new states or transitions are created. </li>
+<li>Mark as accepting those states constructed in this manner that contain an accepting state of M.</li>
+</ul>
+<blockquote>
+<img src="/images/compiler/ch2/2.15.png" alt="2.15" style="zoom:50%;" />
+</blockquote>
+</li>
+</ol>
+<h3 id="4-3-Minimizing-the-number-of-states-in-a-DFA"><a href="#4-3-Minimizing-the-number-of-states-in-a-DFA" class="headerlink" title="4.3 Minimizing the number of states in a DFA"></a>4.3 Minimizing the number of states in a DFA</h3><p>An important result from automata theory states:</p>
+<ul>
+<li>Given any DFA, there is an equivalent DFA containing a minimum number of states, and that this minimum state DFA is unique (except for renaming of states).</li>
+<li>It is also possible to directly obtain this minimum state DFA from any given DFA.</li>
+<li>the resulting DFA may be more complex than necessary. (deriving a DFA algorithmically from a regular expression )</li>
+</ul>
+<p><strong>Given the algorithm as follow:</strong></p>
+<ol>
+<li><p>It begins with the most optimistic assumption possible: it creates two sets</p>
+<ul>
+<li>One consisting of all the accepting states</li>
+<li>The other consisting of all the nonaccepting states.</li>
+</ul>
+</li>
+<li><p>Given this partition of the states of the original DFA, consider the transitions on each character <em>a</em> of the alphabet.</p>
+<ul>
+<li><p>If there are two accepting states <em>s</em> and <em>t</em> that have transitions on <em>a</em> that land in different sets,</p>
+<p>no a-transition can be defined for this grouping of the states. We say that <em>a</em> distinguishes the states <em>s</em> and <em>t</em>.</p>
+</li>
+<li><p>If there are two accepting states <em>s</em> and <em>t</em> such that <em>s</em> has an a-transition to another accepting state, while <em>t</em> has no a-transition at all (i.e., an error transition) ,</p>
+<p>then <em>a</em> distinguishes <em>s</em> and <em>t.</em></p>
+</li>
+<li><p>If any further sets are split, we must return and repeat the process from the beginning.</p>
+</li>
+</ul>
+</li>
+</ol>
+<p>This process continues until</p>
+<p>(1) all sets contain only one element (in which case, we have shown the original DFA to be minimal)</p>
+<p>(2) until no further splitting of sets occurs.</p>
+<blockquote>
+<img src="/images/compiler/ch2/2.16.png" alt="2.16" style="zoom:35%;" />
+</blockquote>
+
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
           <a href="/2020/03/06/Compiler-ch1/">Compiler ch1 Introduction</a>
         </h1>
       
@@ -108,7 +444,7 @@
         <p>A <em>compiler</em> is a computer program that translates computer code written in one programming language (the source code) into another language (the object code)</p>
 <img src="/images/compiler/ch1/1.00.png" alt="1.00" style="zoom:50%;" />
 
-<h2 id="1-Programs-Related-to-Compilers"><a href="#1-Programs-Related-to-Compilers" class="headerlink" title="1. Programs Related to Compilers"></a>1. Programs Related to Compilers</h2><p>Some programs that are related to or used together with compilers and that often come together with compilers in a complete language development environment.</p>
+<h2 id="1-Programs-Related-to-Compilers"><a href="#1-Programs-Related-to-Compilers" class="headerlink" title="1 Programs Related to Compilers"></a>1 Programs Related to Compilers</h2><p>Some programs that are related to or used together with compilers and that often come together with compilers in a complete language development environment.</p>
 <h3 id="1-1-Interpreter"><a href="#1-1-Interpreter" class="headerlink" title="1.1 Interpreter"></a>1.1 Interpreter</h3><p>A language translator. It executes the source program immediately.</p>
 <h3 id="1-2-Assembler"><a href="#1-2-Assembler" class="headerlink" title="1.2 Assembler"></a>1.2 Assembler</h3><p>A translator that translates assembly language into object code</p>
 <img src="/images/compiler/ch1/1.0.png" alt="1.0" style="zoom:50%;" />
