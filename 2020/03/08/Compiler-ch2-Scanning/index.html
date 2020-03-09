@@ -129,13 +129,11 @@
 <blockquote>
 <p>E.g</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  TokenType tokenval;</span><br><span class="line">  <span class="keyword">char</span> * stringval;</span><br><span class="line">  <span class="keyword">int</span> numval;</span><br><span class="line">&#125; TokenRecord;</span><br><span class="line"></span><br><span class="line"><span class="comment">// or possibly as a union</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  TokenType tokenval;</span><br><span class="line">  <span class="keyword">union</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">char</span> * stringval;</span><br><span class="line">  	<span class="keyword">int</span> numval;</span><br><span class="line">  &#125; attribute;</span><br><span class="line">&#125; TokenRecord;</span><br></pre></td></tr></table></figure>
-
 <p>(Which assumes that the string value attribute is needed only for identifiers and the numeric value attribute only for numbers)</p>
 </blockquote>
 <p>Although the task of the scanner is to convert the entire source program into a sequence of tokens, the scanner will rarely do this at once. </p>
 <p>The scanner will operate <u>under the control of the parse</u>, returning the single next token from the input on demand via a function that will have a declaration similar to the C declaration</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">TokenType <span class="title">getToken</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br></pre></td></tr></table></figure>
-
 <blockquote>
 <p>The <strong>getToken</strong> function declared in this manner will, when called, return the next token from the input, as well as compute additional attributes, such as the string value of the token. The string of input characters is usually not made a parameter to this function, but is kept in a buffer or provided by the system input facilities.</p>
 </blockquote>
@@ -147,12 +145,9 @@
 </li>
 <li><p>An expression of the form <strong>r|s</strong>, where r and s are regular expressions. In this case, $L(r|s) = L(r) \cup L(s)$ </p>
 </li>
-<li><p>An expression of the form <strong>rs</strong>, where r and s are regular expressions. In this case, $L(rs) = L(r)L(s)$  </p>
-</li>
-<li><p>An expression of the form <strong>r*</strong>, where r is regular expression. In this case, $ L(r^*)=L(r)^* $.</p>
-</li>
-<li><p>An expression of the form <strong>(r)</strong>, where r is regular expression. In this case, $L((r))=L(r)$. Thus, parenthese do not change the language. They are used only to adjust the precedence of the operations.</p>
-</li>
+<li>An expression of the form <strong>rs</strong>, where r and s are regular expressions. In this case, $L(rs) = L(r)L(s)$  </li>
+<li>An expression of the form <strong>r*</strong>, where r is regular expression. In this case, $ L(r^*)=L(r)^* $.</li>
+<li>An expression of the form <strong>(r)</strong>, where r is regular expression. In this case, $L((r))=L(r)$. Thus, parenthese do not change the language. They are used only to adjust the precedence of the operations.</li>
 </ol>
 <p>Tips:</p>
 <ul>
@@ -220,23 +215,21 @@
 </ul>
 <h2 id="3-Finite-Automata"><a href="#3-Finite-Automata" class="headerlink" title="3 Finite Automata"></a>3 Finite Automata</h2><p>Finite automata( finite-state machines) are a mathematical way of describing particular kinds of algorithms.</p>
 <p>A strong relationship between finite automata and regular expression</p>
-<img src="/images/compiler/ch2/2.1.png" alt="2.1" style="zoom:50%;" />
-
+<p><img src="/images/compiler/ch2/2.1.png" alt="2.1" style="zoom:50%;" /></p>
 <ul>
 <li><p><strong>Transition:</strong> record a change from one state to another upon a match of the character or characters by which they are labeled.</p>
 </li>
 <li><p><strong>start state:</strong> the recognition process begins. drawing an unlabeled arrowed line to it coming “<em>from nowhere</em>”</p>
 </li>
-<li><p><strong>accepting states:</strong> represent the end of the recognition process. drawing a double-line border around the state in the diagram.</p>
-</li>
+<li><strong>accepting states:</strong> represent the end of the recognition process. drawing a double-line border around the state in the diagram.</li>
 </ul>
 <h3 id="3-1-Definite-of-Deterministic-finite-automation-DFA"><a href="#3-1-Definite-of-Deterministic-finite-automation-DFA" class="headerlink" title="3.1 Definite of Deterministic finite automation(DFA)"></a>3.1 Definite of Deterministic finite automation(DFA)</h3><p>DFA: automata where the next state is uniquely given by the current state and the current input character.</p>
 <p><strong>Defintion</strong> of a DFA:</p>
 <p>A DFA (<em>deterministic finite automation</em>) $M$ consist of an alphabet $∑$, a set of states $S$, a transition function $T$ :$ S ×∑ → S$, a <em>start</em> state $s_0∈S$, and a set of <em>accepting</em> states $F \subset S$.</p>
 <p>The language accepted by $M$, written $L(M)$, is defined to be the set of strings of characters $c_1c_2c_3….c_n$ with each</p>
-<p>$c_i∈∑$ such that there exist states $s_1=T(s_0,c_1),s_2=T(s_1,c_2), s_n = T(s_{n-1},c_n)$ with $s_n$ is an element of $F$.</p>
+<p>$c<em>i∈∑$ such that there exist states $s_1=T(s_0,c_1),s_2=T(s_1,c_2), s_n = T(s</em>{n-1},c_n)$ with $s_n$ is an element of $F$.</p>
 <p>Accepting state sn means the diagram:</p>
-<p>$→ s_0 → s_1 → s_2 → ……s_{n-1} → s_n$</p>
+<p>$→ s<em>0 → s_1 → s_2 → ……s</em>{n-1} → s_n$</p>
 <p>Some difference:</p>
 <ul>
 <li><p>The definition does not restrict the set of states to numbers</p>
@@ -251,18 +244,13 @@
 <p>E.g</p>
 <p>digit = [0-9]</p>
 <p>nat = digit +</p>
-<img src="/images/compiler/ch2/2.2.png" alt="2.2" style="zoom:50%;" />
-
+<p><img src="/images/compiler/ch2/2.2.png" alt="2.2" style="zoom:50%;" /></p>
 <p>signedNat = (+|-) ? nat</p>
-<img src="/images/compiler/ch2/2.3.png" alt="2.3" style="zoom:50%;" />
-
+<p><img src="/images/compiler/ch2/2.3.png" alt="2.3" style="zoom:50%;" /></p>
 <p>number = signedNat (“.” nat) ? (E signedNat) ?</p>
-<img src="/images/compiler/ch2/2.4.png" alt="2.4" style="zoom:50%;" />
-
-
-
+<p><img src="/images/compiler/ch2/2.4.png" alt="2.4" style="zoom:50%;" /></p>
 <p>A DFA of C comments: (easily than write down a regular expression)</p>
-<img src="/images/compiler/ch2/2.5.png" alt="2.5" style="zoom:50%;" />
+<p><img src="/images/compiler/ch2/2.5.png" alt="2.5" style="zoom:50%;" /></p>
 </blockquote>
 <h3 id="3-2-Lookahead-backtracking-and-nondeterministic-automata"><a href="#3-2-Lookahead-backtracking-and-nondeterministic-automata" class="headerlink" title="3.2 Lookahead,backtracking and nondeterministic automata"></a>3.2 Lookahead,backtracking and nondeterministic automata</h3><p>A typical action</p>
 <ol>
@@ -275,11 +263,9 @@
 </ol>
 <blockquote>
 <p>E.g</p>
-<img src="/images/compiler/ch2/2.6.png" alt="2.6" style="zoom:50%;" />
-
-<img src="/images/compiler/ch2/2.7.png" alt="2.7" style="zoom:50%;" />
-
-<img src="/images/compiler/ch2/2.8.png" alt="2.8" style="zoom:50%;" />
+<p><img src="/images/compiler/ch2/2.6.png" alt="2.6" style="zoom:50%;" /></p>
+<p><img src="/images/compiler/ch2/2.7.png" alt="2.7" style="zoom:50%;" /></p>
+<p><img src="/images/compiler/ch2/2.8.png" alt="2.8" style="zoom:50%;" /></p>
 </blockquote>
 <p><strong>NFA</strong>: <em>nondeterministic finite automaton</em>,</p>
 <p>Developing an algorithm for turning these NFA into DFAs.</p>
@@ -292,35 +278,33 @@
 <li>Describe a match of the empty string explicitly.</li>
 </ol>
 <blockquote>
-<img src="/images/compiler/ch2/2.9.png" alt="2.9" style="zoom:50%;" />
+<p><img src="/images/compiler/ch2/2.9.png" alt="2.9" style="zoom:50%;" /></p>
 </blockquote>
 <p><strong>Definition</strong> of a <strong>NFA</strong> (<em>nondeterministic finite automaton</em>)  $M$ </p>
 <p>consists of an alphabet $\Sigma $, a set of states $S$,</p>
 <p>a transition function $T$: $S \times(\Sigma \cup { \varepsilon}) \rightarrow \zeta(S)$,</p>
 <p>a start state $s_0$ from $S$, and a set of accepting states $A$ from $S$.</p>
-<p>The language accepted by $M$, written $L(M)$, is defined to be the set of strings of characters $c_1c_2…. c_n$ with each $c_i$ from $\Sigma\cup{\varepsilon}$, such that there exist states $s_1$ in $T(s_0,\ c_1)$, $s_2$ in $T(s_1,\ c_2)$, … , $s_n$ in $T(s_{n-1},\ c_n)$ with $s_n$ an element of $A$</p>
+<p>The language accepted by $M$, written $L(M)$, is defined to be the set of strings of characters $c<em>1c_2…. c_n$ with each $c_i$ from $\Sigma\cup{\varepsilon}$, such that there exist states $s_1$ in $T(s_0,\ c_1)$, $s_2$ in $T(s_1,\ c_2)$, … , $s_n$ in $T(s</em>{n-1},\ c_n)$ with $s_n$ an element of $A$</p>
 <p>An NFA does not represent an algorithm. However, it can be simulated by an algorithm that backtracks through every nondeterministic choice.</p>
 <blockquote>
 <p>E.g</p>
-<img src="/images/compiler/ch2/2.10.png" alt="2.10" style="zoom:50%;" />
+<p><img src="/images/compiler/ch2/2.10.png" alt="2.10" style="zoom:50%;" /></p>
 </blockquote>
 <h2 id="4-From-Regular-Expression-To-a-DFA"><a href="#4-From-Regular-Expression-To-a-DFA" class="headerlink" title="4 From Regular Expression To a DFA"></a>4 From Regular Expression To a DFA</h2><p>The algorithm : translating a regular expression into a DFA .</p>
-<img src="/images/compiler/ch2/2.11.png" alt="2.11" style="zoom:50%;" />
-
+<p><img src="/images/compiler/ch2/2.11.png" alt="2.11" style="zoom:50%;" /></p>
 <h3 id="4-1-From-a-regular-expression-to-an-NFA"><a href="#4-1-From-a-regular-expression-to-an-NFA" class="headerlink" title="4.1 From a regular expression to an NFA"></a>4.1 From a regular expression to an NFA</h3><p><strong>Thompson’s construction:</strong></p>
 <p>ε-transitions: to “<em>glue together</em>” the machine of each piece of a regular expression to form a machine that corresponds to the whole expression.</p>
-<img src="/images/compiler/ch2/2.12.png" alt="2.12" style="zoom:50%;" />
-
+<p><img src="/images/compiler/ch2/2.12.png" alt="2.12" style="zoom:50%;" /></p>
 <h3 id="4-2-From-an-NFA-to-a-DFA"><a href="#4-2-From-an-NFA-to-a-DFA" class="headerlink" title="4.2 From an NFA to a DFA"></a>4.2 From an NFA to a DFA</h3><p>The algorithm is called the <strong>subset construction</strong>.</p>
 <ol>
 <li><p><strong><em>the</em></strong> <strong>$\varepsilon$-closure of a Set of states:closure of a Set of states:</strong></p>
 <p>the $\varepsilon$-closure of a single state <em>s</em> is the set of states reachable by a series of zero or more $\varepsilon$-transitions<em>.</em></p>
 <blockquote>
-<img src="/images/compiler/ch2/2.13.png" alt="2.13" style="zoom:50%;" />
+<p><img src="/images/compiler/ch2/2.13.png" alt="2.13" style="zoom:50%;" /></p>
 </blockquote>
 <p>the $\varepsilon$-closure of a set of states : the union of the $\varepsilon$-closures of each individual state.</p>
 <blockquote>
-<img src="/images/compiler/ch2/2.14.png" alt="2.14" style="zoom:50%;" />
+<p><img src="/images/compiler/ch2/2.14.png" alt="2.14" style="zoom:50%;" /></p>
 </blockquote>
 </li>
 <li><p><strong>the Subset Construction:</strong></p>
@@ -331,7 +315,7 @@
 <li>Mark as accepting those states constructed in this manner that contain an accepting state of M.</li>
 </ul>
 <blockquote>
-<img src="/images/compiler/ch2/2.15.png" alt="2.15" style="zoom:50%;" />
+<p><img src="/images/compiler/ch2/2.15.png" alt="2.15" style="zoom:50%;" /></p>
 </blockquote>
 </li>
 </ol>
@@ -366,7 +350,7 @@
 <p>(1) all sets contain only one element (in which case, we have shown the original DFA to be minimal)</p>
 <p>(2) until no further splitting of sets occurs.</p>
 <blockquote>
-<img src="/images/compiler/ch2/2.16.png" alt="2.16" style="zoom:35%;" />
+<p><img src="/images/compiler/ch2/2.16.png" alt="2.16" style="zoom:35%;" /></p>
 </blockquote>
 
 
@@ -437,6 +421,7 @@
             all[i].SourceElement().parentNode.className += ' has-jax';
     });
 </script>
-<script src="https://cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </body>
 </html>
