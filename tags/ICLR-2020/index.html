@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="google-site-verification" content="RWClpuYiHVU-1eDpl76WLimnkSZy5fW0SAasS-6LRrQ" />
+  <meta name="baidu-site-verification" content="yHGe4f3Kur" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Honghui Weng</title>
+  
+    <link rel="icon" href="/images/favicon.ico">
+  
+  
+  
+  
+    <!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+    <div class="Shell">
+        <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(/images/wenghh.png)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Honghui Weng</div>
+        
+        <ul>
+          
+            <a href="/home/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/about/" class="Btn">
+              <li>About</li>
+            </a>  
+          
+            <a href="/" class="Btn">
+              <li>Blog</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+            
+                <a href="https://github.com/wenghonghui" target="_blank" rel="noopener">
+                    <img src="/assets/github.svg" />
+                </a>
+            
+        
+    </section>
+</aside>
+
+        <div class="container">
+            <div class="main" data-pager-shell>
+                <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ ICLR 2020 }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2020/03/25/Knowledge-Consistency/">[Paper Reading] Knowledge Consistency between Neural Networks and Beyond</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2020-03-25T08:45:50.000Z" itemprop="datePublished">
+    2020-03-25
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/paper-reading/">paper reading</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/ICLR-2020/">ICLR 2020</a> }
+  </li>
+
+
+  </ul>
+  
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p><img src="/images/paper_reading/knowledge_consistency/00.png" alt="1"></p>
+<h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h2><p>深度神经网络（DNN）已经在很多任务中表现出了强大的能力，但目前仍缺乏诊断其中层表达能力的数学工具，如发现表达中的缺陷或识别可靠/不可靠的特征。由于数据泄漏或数据集发生变化，基于测试准确率的传统 DNN 评测方法无法深入评估 DNN 表达的正确性。</p>
+<p>这篇论文提出了一种从知识一致性的角度来诊断 DNN 中层表达能力的方法。即，给定两个为同一任务训练的 DNN（无论二者架构是否相同），目标是检验两个 DNN 的中间层是否编码相似的视觉概念。</p>
+<p>该研究实现了：</p>
+<p>(1) 定义并量化了神经网络之间知识表达的不同阶的一致性；</p>
+<p>(2) 对强弱神经网络中层知识进行分析；</p>
+<p>(3) 对中层特征的诊断，在不增加训练样本标注的前提下进一步促进神经网络分类准确率；</p>
+<p>(4) 为解释神经网络压缩和知识蒸馏提供了一种新的思路。</p>
+<h2 id="2-背景介绍"><a href="#2-背景介绍" class="headerlink" title="2. 背景介绍"></a>2. 背景介绍</h2><h3 id="2-1-可解释性"><a href="#2-1-可解释性" class="headerlink" title="2.1 可解释性"></a>2.1 可解释性</h3><p>这篇论文提出一种对神经网络特征表达一致性、可靠性、知识盲点的评测与解释方法，属于可解释性方向的研究。</p>
+<p>可解释性是指人们能够理解决策原因的程度或者说一个人能够一直预测模型结果的程度。大部分神经网络模型对于人们而言，就像是一个黑盒，我们往训练好的模型中传入数据，得到模型的预测结果。但对于某些问题或任务，获得预测结果是不够的。模型还必须解释它是如何得出预测的。</p>
+<p>解释方法的属性可用于判断解释方法或解释的好坏。</p>
+<ul>
+<li><p><strong>表达能力</strong>是解释方法能够产生的“语言”或结构。解释方法可以生成 IF-THEN 规则、决策树、加权和、自然语言或其他东西。</p>
+</li>
+<li><p><strong>半透明度</strong>描述了解释方法依赖于查看模型（如其参数）的程度。</p>
+</li>
+<li><p><strong>可移植性</strong>描述了解释方法可使用的范围。低半透明度的方法具有较高的可移植性，因为它们将模型视为黑盒。</p>
+</li>
+<li><p><strong>算法复杂度</strong>描述了生成解释方法的计算复杂性。</p>
+</li>
+</ul>
+<ul>
+<li><p><strong>准确度</strong>：解释如何预测看不见的数据。如果将解释用于预测而不是机器学习模型，那么高精度尤为重要。</p>
+</li>
+<li><p><strong>一致性</strong>：在接受过相同任务训练的模型和产生类似预测的模型之间，解释有多大不同。</p>
+<p>（例如，在同一个任务上训练一个支持向量机和一个线性回归模型，两者都产生非常相似的预测。我们用自己选择的方法计算解释，并分析解释有多不同。如果解释非常相似，说明是高度一致的。两个模型可以使用不同的特征，但得到相似的预测（也叫”<a href="https://en.wikipedia.org/wiki/Rashomon_effect" target="_blank" rel="noopener">罗生门效应</a>）。在这种情况下，高度一致性是不可取的，因为解释必须非常不同。如果模型确实依赖于相似的关系，则需要高一致性。）</p>
+</li>
+<li><p><strong>稳定性</strong>：对类似情况的解释有多相似。虽然一致性比较模型之间的解释，但稳定性比较固定模型的类似实例之间的解释。高稳定性意味着实例特征的细微变化不会实质性改变解释（除非这些细微变化也会强烈改变预测）。缺乏稳定性可能是解释方法方差较大的结果。换句话说，解释方法受到要解释的实例的特征值的微小变化的强烈影响。缺乏稳定性也可能是由解释方法的不确定成分引起的，如数据采样步骤，就像<a href="https://christophm.github.io/interpretable-ml-book/lime.html#lime" target="_blank" rel="noopener">本地代理</a>方法一样。高稳定性总是可取的。</p>
+<blockquote>
+<p>具体内容可参考 <a href="https://christophm.github.io/interpretable-ml-book/" target="_blank" rel="noopener">Interpretable Machine Learning</a></p>
+<p><img src="/images/paper_reading/knowledge_consistency/01.png" style="zoom:25%;" /></p>
+</blockquote>
+</li>
+</ul>
+<h3 id="2-2-相关工作"><a href="#2-2-相关工作" class="headerlink" title="2.2 相关工作"></a>2.2 相关工作</h3><p> 一般而言，针对于解释或分析DNN知识表达的研究可以大致分为以下三种类型：</p>
+<ul>
+<li><p><strong>从视觉或语义上解释DNN</strong></p>
+<p>DNN的可视化是解释DNN中隐藏的知识的最直接方法。</p>
+<blockquote>
+<p>在github上已经有作者用pytorch实现了一系列论文中的可视化技术</p>
+<p><a href="https://github.com/utkuozbulak/pytorch-cnn-visualizations" target="_blank" rel="noopener">pytorch-cnn-visualizations</a></p>
+</blockquote>
+<p>除了可视化之外，一些方法还可以诊断经过预训练的CNN，以深入了解CNN表示形式。 （例如分析多个过滤器如何共同表示特定的语义概念；估计直接贡献网络输出的图像区域；假设DNN的输入和输出之间存在线性关系，以提取重要的输入单位；提出许多指标来评估不同解释方法的解释结果的客观性等等。）</p>
+<p>与先前研究可视化DNN中编码的视觉外观或提取重要像素的方法不同，这篇论文的方法可以分解并量化两个DNN之间一致的特征分量。而且不同阶的一致特征分量可以被可视化。</p>
+</li>
+<li><p><strong>开发可解释的深层模型</strong></p>
+<p>相较于事后对DNN进行解释，我们可以通过开发内在可解释的模型，从一开始就避免黑盒(black box)问题。</p>
+</li>
+<li><p><strong>DNN表达能力的数学评估</strong></p>
+<p>制定和评估DNN的表达能力是另一个新兴的方向。（近些年来有许多的成果）</p>
+<p>其中对DNN之间表达能力相似性的分析与这篇论文研究高度相关。之前的大多数研究通过线性变换比较了表达能力，可以将其视为0阶的知识一致性。相比之下，这篇论文专注于高阶知识一致性，并提供可用于完善网络功能和解释现有深度学习技术的成功的方法。</p>
+</li>
+</ul>
+<h2 id="3-知识一致性模型"><a href="#3-知识一致性模型" class="headerlink" title="3 知识一致性模型"></a>3 知识一致性模型</h2><h3 id="3-1-概念与符号定义"><a href="#3-1-概念与符号定义" class="headerlink" title="3.1 概念与符号定义"></a>3.1 概念与符号定义</h3><ul>
+<li><p><strong>知识(knowledge)与特征(features)</strong></p>
+<p>DNN中层网络的knowledge是指 由中层网络特征(feature)编码的视觉概念集合</p>
+<p>研究关注的是两个DNN之间“知识”的一致性，而不是“特征”的相似性。相比之下，“特性”指的是一层的显式输出。</p>
+<p>例如，两个DNN提取完全不同的特征，但这些特征可以使用类似的视觉概念集来计算，即编码一致的知识。</p>
+</li>
+<li><p><strong>符号定义</strong></p>
+<p>令$A$和$B$表示为根据同一任务学习的两个DNN。 $x_A$和$x_B$分别表示$A$和$B$的两个中间层特征。</p>
+<p>可以将特征$x_A$和$x_B$分解为 $x_A = \hat{x}_A + \epsilon_A$ 和 $x_B = \hat{x}_B + \epsilon_B$  </p>
+<p>其中特征分量 $\hat{x}_A$ 和 $\hat{x}_B$ 中的神经激活由相同的图像区域触发，从而代表了一致的知识。 因此，特征分量 $\hat{x}_A$ 和 $\hat{x}_B$ 被称为$A$和$B$之间的一致特征。 特征分量 $\epsilon_A$ 和 $\epsilon_B$ 彼此独立，被称为不一致的特征。 </p>
+<p>我们假设一致的分量 $\hat{x}_A$ 和 $\hat{x}_B$ 可以相互重构，即 $\hat{x}_A$ 可以从 $\hat{x}_B$ 重构； 反之亦然</p>
+<p>在应用方面，DNN之间的知识一致性可用于诊断DNN的特征可靠性。通常，一致的分量$<br>(\hat{x}_A, \hat{x}_B)$ 代表了可靠的知识。而不一致的分量 $(\epsilon_A,\epsilon_B)$ 表示不可靠的知识或噪音。</p>
+</li>
+<li><p><strong>不同阶的模糊一致性(fuzzy consistency)</strong></p>
+<p>同时如下图所示，由于两个DNN之间没有严格的知识一致性，因此必须在不同阶的模糊度上定义DNN之间的知识一致性。</p>
+<p><img src="/images/paper_reading/knowledge_consistency/03.png" alt="03"></p>
+<p>知识一致性的模糊程度衡量了将一个DNN的特征转换为另一个DNN的特征的难度。 低阶的模糊性表示DNN的特征可以直接通过线性变换重建另一个DNN的特征，而无需进行复杂的转换。</p>
+</li>
+<li><p><strong>分解(disentanglemen)和量化(quantification)</strong></p>
+<p>我们需要分解和量化特征分量，这些特征分量对应于不同阶的模糊度的一致知识。同样，我们也可以分解并量化不一致的特征分量。</p>
+<p>不存在一种标准的方法来量化知识一致性的模糊程度（即特征转换的难度）。研究者在特征重建过程中使用非线性变换来近似模糊性。为此，研究者提出了一种用于特征重构的模型 $g_k$ 。下标 $k$ 表示 $g_k$ 包含总数为 $k$ 的级联非线性激活层。</p>
+<p>$\hat{x}_A = g_k(x_B)$ 表示与DNN $A$ 中的特征分量 $x_A$，可以通过DNN $B$ 的特征 $x_B$ 进行重构。然后，我们认为$\hat{x}_A = g_k(x_B)$ 代表第 $k$ 阶上与DNN $B$一致的知识。$\hat{x}_A = g_k(x_B)$ 也被称为 $x_A$ 关于 $x_B$ 的 $k$ 阶一致特征。</p>
+<p>根据上述定义，最严格的一致性是0阶一致性，即可以通过线性变换从 $x_B$ 重建 $\hat{x}_A = g_0(x_B)$ 。 相比之下，一阶一致性特征 $\hat{x}_A = g_1(x_B)$ 中的某些神经激活函数并不直接由$x_B$表示，需要通过非线性转换进行预测。</p>
+<p>$k$ 越小，表示重建所涉及的预测越少，一致性越严格。 注意，由于没有标准方法来量化预测难度，因此非线性运算的数量 $k$ 只是预测难度的近似值。</p>
+</li>
+</ul>
+<h3 id="3-2-算法"><a href="#3-2-算法" class="headerlink" title="3.2 算法"></a>3.2 算法</h3><p>论文将上面提出的模型 $g$ 实现为神经网络，其中 $K$ 为 $g$ 中的非线性变换层数。</p>
+<p> 如下图所示，$g$ 用于分解和量化DNN之间不同阶的一致特征分量。 即当我们使用一个DNN的中间层特征 $x$ 去重构另一个DNN的中间层特征 $x^*$ 时，通过神经网络 $g$，将神经网络中层特征 $x^*$ 拆分为 0-K 阶不同的一致性特征分量，以及不一致特征分量。</p>
+<script type="math/tex; mode=display">
+x^*=g_{\theta}(x)+x^{\Delta},\ \ \ \ \ \ g_{\theta}(x)=x^{(0)}+x^{(1)}+...+x^{(K)}</script><p><img src="/images/paper_reading/knowledge_consistency/02.png" alt="02"></p>
+<h2 id="4-实验与应用"><a href="#4-实验与应用" class="headerlink" title="4 实验与应用"></a>4 实验与应用</h2><p>五个用于图像分类的典型CNN网络：AlexNet, VGG-16, ResNet-18, ResNet-34, ResNet-50</p>
+<p>三个基准数据集：CUB200-2011 dataset, Standford Dogs dataset, Pascal VOC 2012 dataset</p>
+<h3 id="4-1-基于知识一致性的网络诊断"><a href="#4-1-基于知识一致性的网络诊断" class="headerlink" title="4.1 基于知识一致性的网络诊断"></a>4.1 基于知识一致性的网络诊断</h3><p>知识一致性最直接的应用是使用强(well learned) DNN来诊断隐藏在弱DNN中表达缺陷。这在实际应用中具有特殊的价值，例如通常弱DNN比 deep DNN更适合用于移动设备。</p>
+<p>我们假设强DNN已经编码了目标任务的知识。 弱DNN可能具有以下两种类型的表达缺陷。</p>
+<ul>
+<li><strong>不可靠特征</strong>：无法用强DNN特征重建的特征分量。</li>
+<li><strong>盲点：</strong> 强DNN中与弱DNN不一致的特征分量。 这些特征分量通常反映弱DNN知识的盲点。</li>
+</ul>
+<p><strong>实验</strong>使用CUB200-2011数据集对DNN进行分类训练。将AlexNet视为弱DNN（56.97％top-1准确性），将ResNet-34作为强DNN（73.09％top-1准确性）</p>
+<p>实验诊断了AlexNet中最后一个卷积层的输出特征，称为$x_A$。我们选择了ResNet-34的最后 $14×14×256$ 的特征图（用 $x_B$ 表示），来计算知识一致性，因为 $x_A$ 和 $x_B$ 具有相似的图大小。我们从$x_A$中分解并可视化了 $x_A$ 中不一致的分量。我们还可视化了$x_B$ 中不一致的分量，这对应于弱DNN知识盲点。</p>
+<p><img src="/images/paper_reading/knowledge_consistency/04.png" alt="04"></p>
+<p>此外还进行了两个实验，以验证上面提到的DNN中盲点和不可靠特征的主张。</p>
+<p>第一个实验旨在验证盲点。当我们将盲点信息添加到原始特征时，分类准确性得到了提高。</p>
+<p>第二个实验验证不可靠特征。当我们从原始特征中删除不可靠特征的信息时，分类准确性得到了提高。</p>
+<h3 id="4-2-神经网络训练的稳定性"><a href="#4-2-神经网络训练的稳定性" class="headerlink" title="4.2 神经网络训练的稳定性"></a>4.2 神经网络训练的稳定性</h3><p>神经网络训练的稳定性在深度学习中具有相当重要的价值，即当人们为同一任务重复学习多个DNN时，检查所有DNN是否都表达了相同的知识。 DNN之间的知识一致性高通常表明学习稳定性高。</p>
+<p>更具体地说，我们针对同一任务训练了两个具有相同架构的DNN $(A, B)$ , 然后我们分别从特定层的特征$x_A$, $x_B$ 中解开不一致的特征分量: $x^{\Delta}_A =x_A-g_θ(x_B)$ 和 $x^{\Delta}_B=x_B-g_θ(x_A)$。</p>
+<p>$g_θ(x_B)$ 和 $g_θ(x_A)$ 分别对应于 $x_A$ 和 $x_B$ 中一致的特征分量，它们的知识由两个网络共享。</p>
+<p>然后可以使用 $Var(x^∆_A)/Var(x_A)$ 衡量DNN A和B的不稳定性。</p>
+<script type="math/tex; mode=display">
+Var(x^{\Delta}_A)=E_{I,i}[(x^{\Delta}_{A,I,i}-E_{I',i'}[x^{\Delta}_{A',I',i'}])^2]</script><p>实验评估了AlexNet，VGG-16和ResNet-34 网络训练的不稳定性。</p>
+<p>如下表所示，当训练样本相对较少时，浅层的神经网络的训练有更强的稳定性。</p>
+<p><img src="/images/paper_reading/knowledge_consistency/07.png" alt="07"></p>
+<h3 id="4-3-基于知识一致性的特征改进"><a href="#4-3-基于知识一致性的特征改进" class="headerlink" title="4.3 基于知识一致性的特征改进"></a>4.3 基于知识一致性的特征改进</h3><p>知识一致性还可以用于改进预训练DNN的中间层特征。</p>
+<p>针对同一任务进行了预训练的多个DNN，这些DNN中一致的特征分量往往代表更可靠的信息，与其他DNN不一致的特征分量通常对应于不可靠的知识或噪音。 可以通过删除不一致的分量或专门使用一致的分量来进一步提升神经网络的分类精度。即，在不增加训练样本标注的前提下，利用知识一致性进一步提升模型的分类正确率。</p>
+<blockquote>
+<p>更具体地说，给定两个预训练的DNN，我们使用第一个DNN中某个层的特征来重构第二个DNN的相应特征。重构后的特征以 $\hat{x}$ 表示。这样，我们可以用重构后的特征替换第二个DNN的特征，然后使用 $\hat{x}$ 同时学习第二个DNN中的所有后续层以提高性能。</p>
+</blockquote>
+<p>如下表所示，一致的特征分量往往代表更可靠的信息，可以进一步提升神经网络的分类精度。</p>
+<p><img src="/images/paper_reading/knowledge_consistency/06.png" alt="06" style="zoom:50%;" /></p>
+<p>如下表所示，知识一致性算法可以有效的去除与目标应用无关的冗余特征分量，进一步提升目标应用的性能。</p>
+<p><img src="/images/paper_reading/knowledge_consistency/08.png" alt="08" style="zoom:50%;" /></p>
+<h3 id="4-4-分析网络压缩的信息丢弃"><a href="#4-4-分析网络压缩的信息丢弃" class="headerlink" title="4.4 分析网络压缩的信息丢弃"></a>4.4 分析网络压缩的信息丢弃</h3><p>网络压缩是近年来新兴的研究方向。 压缩网络与原始网络之间的知识一致性可以评估压缩过程中知识的丢弃情况。人们可以可视化或分析原始网络中与压缩网络中的特征不一致的特征分量，以表示在压缩网络中被丢弃的知识。</p>
+<p>研究者使用压缩后模型生成的特征来重建原始模型的特征，不一致的特征分量往往对应着压缩过程中被舍弃的知识。如下图（左）所示，通过量化这部分被舍弃的知识，他们发现在压缩过程中较小的知识损失会有更高的分类正确率</p>
+<blockquote>
+<p>具体过程为使用CUB200-2011数据集训练了VGG-16进行细粒度分类。 然后，使用（Han et al. , 2016）的方法将VGG-16压缩为不同的修剪阈值。 研究者使用压缩DNN的特征来重构原始DNN的特征。 然后与原始DNN不一致的分量通常对应于压缩过程中的知识丢弃。 下图（左）显示了丢弃的特征分量。 研究者使用$Var(x^∆)$来量化信息丢弃，并比较了准确性的降低和特征信息的丢弃之间的关系。</p>
+</blockquote>
+<p><img src="/images/paper_reading/knowledge_consistency/05.png" alt="05"></p>
+<h3 id="4-5-通过知识一致性来解释知识蒸馏"><a href="#4-5-通过知识一致性来解释知识蒸馏" class="headerlink" title="4.5 通过知识一致性来解释知识蒸馏"></a>4.5 通过知识一致性来解释知识蒸馏</h3><blockquote>
+<p>关于知识蒸馏可以看 “Geoffrey E. Hinton, Oriol Vinyals, and Jeff Dean. Distilling the knowledge in a neural networks. 2015.” </p>
+</blockquote>
+<p>通常，新一代的网络既从旧网络继承知识，又从数据中学习新知识。再次出生的神经网络的成功可以解释为在递归蒸馏过程中网络的知识表示逐渐丰富。</p>
+<p>如上图（右），通过量化不同代的再生神经网络中不一致的特征分量，可以发现随着蒸馏代数的增加，不可靠的特征分量逐渐减少</p>
+<blockquote>
+<p>具体过程为使用CUB200-2011数据集训练了VGG-16进行细粒度分类。然后训练了总共四代的重生神经网络。在最新的DNN中分解特征分量，这些分量与中间DNN不一致。不一致的分量被视为中间DNN知识表达的盲点，并通过$Var(x∆)$ 进行量化。</p>
+</blockquote>
+<h3 id="4-6-不同任务之间的一致和不一致的特征"><a href="#4-6-不同任务之间的一致和不一致的特征" class="headerlink" title="4.6 不同任务之间的一致和不一致的特征"></a>4.6 不同任务之间的一致和不一致的特征</h3><p>知识一致性算法可以分析不同任务训练得到模型中的一致/不一致特征。</p>
+<p>如下图所示，研究者训练网络 A 进行 320 类细分类（包括 CUB 中的 200 类鸟与 Stanford Dog 中的 120 类狗），训练网络 B 进行简单的二分类（鸟或狗），通过特征相互重构，可以看到网络 A 中建模了更多的知识，网络 A 的特征能够更好地重构网络 B 的特征。</p>
+<p><img src="/images/paper_reading/knowledge_consistency/09.png" alt="09"></p>
+<h2 id="5-总结"><a href="#5-总结" class="headerlink" title="5 总结"></a>5 总结</h2><p>本文提出了DNN中间层之间知识一致性的一般定义。 </p>
+<p>开发了一种与任务无关的方法，以从中间层特征中分解并量化不同阶的一致特征。</p>
+<p> 一致的特征分量通常比不一致的分量更可靠，因此该方法可用于进一步完善预训练的DNN，而无需其他监督。</p>
+<p> 作为一种数学工具，知识一致性还可以帮助解释现有的深度学习技术，并且通过实验证明了这个方法的有效性。</p>
+
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+
+       
+            </div>
+            <div class="footer">
+                <footer id="footer" class="footer">
+    <div>© 2020 - Honghui Weng </div>
+    
+</footer>
+
+            </div>
+            
+            
+        </div>
+        
+    </div>
+    
+<script src="/js/pager/dist/singlepager.js"></script>
+
+    <script>
+    var sp = new Pager('data-pager-shell')
+
+    </script>
+</body>
+</html>
