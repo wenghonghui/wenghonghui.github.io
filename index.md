@@ -1,5 +1,4 @@
 ## Welcome to GitHub Pages
-<meta name="google-site-verification" content="RWClpuYiHVU-1eDpl76WLimnkSZy5fW0SAasS-6LRrQ" />
 You can use the [editor on GitHub](https://github.com/wenghonghui/wenghonghui.github.io/edit/main/index.md) to maintain and preview the content for your website in Markdown files.
 
 Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
